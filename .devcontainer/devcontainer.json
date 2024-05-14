@@ -20,7 +20,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"humao.rest-client"
+				"humao.rest-client",
+				"esbenp.prettier-vscode"
 			]
 		}
 	}
