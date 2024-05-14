@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       entities: ['**/*.entity.js'],
       synchronize: true, //migrate automatically, not recommended in production/staging environment
     }),
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
