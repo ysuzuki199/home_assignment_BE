@@ -13,6 +13,7 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
+      - /app/node_modules
   db:
     image: mysql:8.0.34
     restart: always
