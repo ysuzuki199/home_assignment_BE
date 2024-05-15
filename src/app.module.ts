@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatModule } from './chat/chat.module';
-
+import { User } from './user/user.entity';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 @Module({
   imports: [
     UserModule,
@@ -18,9 +25,14 @@ import { ChatModule } from './chat/chat.module';
       entities: ['**/*.entity.js'],
       synchronize: true, //migrate automatically, not recommended in production/staging environment
     }),
+    TypeOrmModule.forFeature([User]),
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UserService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
+}
