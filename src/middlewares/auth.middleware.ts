@@ -1,17 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { flatMap } from 'rxjs';
-
-// extend Request type to inject auth result
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-    }
-  }
-}
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
