@@ -15,6 +15,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ChatService } from './chat.service';
+import { JoinNewRoomDto } from './dto/join_new_room.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway
@@ -23,18 +25,10 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
 
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
-
-  @SubscribeMessage('message')
-  @UseGuards(AuthGuard)
-  handleMessage(
-    @MessageBody() payload: string,
-    @ConnectedSocket() client: Socket,
-  ): string {
-    console.log('received');
-    client.emit('message', `Hello world!:  ${payload}`);
-    return `Hello world!:  ${payload}`;
-  }
+  constructor(
+    @InjectRepository(User) private userRepo: Repository<User>,
+    private chatService: ChatService,
+  ) {}
 
   afterInit(server: Server) {
     //auth middleware for socket.io connection
@@ -50,6 +44,20 @@ export class ChatGateway
       socket.user = user;
       next();
     });
+  }
+
+  @SubscribeMessage('join_new_room')
+  @UseGuards(AuthGuard)
+  async joinNewRoom(
+    @MessageBody() dto: JoinNewRoomDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    const room = await this.chatService.joinNewRoom(client.user.id, dto.title);
+    //join room
+    client.join(`${room.id}`);
+    //emit some message to participants
+    client.to(`${room.id}`).emit('join_user', `${client.user.nickname} joined`);
+    return 'join_new_room success';
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
