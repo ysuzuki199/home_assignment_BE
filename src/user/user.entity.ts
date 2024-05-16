@@ -3,7 +3,7 @@ import { Message } from 'src/chat/message.entity';
 import { Participant } from 'src/chat/patricipant.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;

@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-@Entity()
+@Entity('rooms')
 export class Room {
   @PrimaryGeneratedColumn()
   id: number;

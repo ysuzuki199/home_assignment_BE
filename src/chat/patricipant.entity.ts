@@ -6,7 +6,7 @@ enum ParticipantStatus {
   ONLINE = 'online',
   OFFLINE = 'offline',
 }
-@Entity()
+@Entity('participants')
 export class Participant {
   @PrimaryColumn()
   roomID: number;
