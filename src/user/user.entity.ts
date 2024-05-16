@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Room } from 'src/chat/room.entity';
+import { Message } from 'src/chat/message.entity';
+import { Participant } from 'src/chat/patricipant.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -7,4 +10,20 @@ export class User {
 
   @Column()
   nickname: string;
+
+  @OneToMany(() => Room, (room) => room.createdBy, {
+    nullable: false,
+  })
+  rooms: Room[];
+
+  @OneToMany(() => Message, (message) => message.createdBy, {
+    nullable: false,
+  })
+  messages: Message[];
+
+  @OneToMany(() => Participant, (participant) => participant.user, {
+    nullable: false,
+  })
+  //TODO: consider appropriate field name
+  participants: Participant[];
 }
