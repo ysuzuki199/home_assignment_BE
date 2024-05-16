@@ -100,6 +100,7 @@ export class ChatService {
       order: {
         createdAt: 'DESC',
       },
+      relations: ['user'],
     });
     return messages;
   }
