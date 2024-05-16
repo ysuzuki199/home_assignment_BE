@@ -25,13 +25,14 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
       entities: ['**/*.entity.js'],
       synchronize: true, //migrate automatically, not recommended in production/staging environment
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User]), //DI user repository
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UserService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
+  //apply auth middleware
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*');
   }
