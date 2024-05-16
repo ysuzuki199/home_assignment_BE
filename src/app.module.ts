@@ -7,11 +7,11 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatModule } from './chat/chat.module';
 import { User } from './user/user.entity';
-import { AuthMiddleware } from './middlewares/auth.middleware';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     UserModule,
@@ -27,6 +27,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
     }),
     TypeOrmModule.forFeature([User]), //DI user repository
     ChatModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

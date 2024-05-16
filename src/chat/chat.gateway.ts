@@ -14,7 +14,7 @@ import { extractUserFromAuthHeader } from 'src/middlewares/auth.middleware';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway
