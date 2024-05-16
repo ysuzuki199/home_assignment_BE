@@ -1,5 +1,8 @@
 ## server setup
 ```
+# clone and move to root dir
+git clone https://github.com/ysuzuki199/home_assignment_BE.git
+cd home_assignment_BE/
 # build
 docker compose build
 # run containers(backend and MySQL database)
