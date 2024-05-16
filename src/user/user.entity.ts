@@ -1,9 +1,16 @@
 import { Room } from 'src/chat/room.entity';
 import { Message } from 'src/chat/message.entity';
 import { Participant } from 'src/chat/patricipant.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Unique,
+} from 'typeorm';
 
 @Entity('users')
+@Unique(['nickname'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
