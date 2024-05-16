@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Room } from './room.entity';
 
@@ -10,7 +16,8 @@ export class Message {
   @ManyToOne(() => Room, (room) => room.messages, {
     nullable: false,
   })
-  room: number;
+  @JoinColumn()
+  room: Room[];
 
   @Column()
   content: string;
@@ -21,7 +28,8 @@ export class Message {
   @ManyToOne(() => User, (user) => user.messages, {
     nullable: false,
   })
-  createdBy: number;
+  @JoinColumn()
+  createdBy: User[];
 
   @Column()
   updatedAt: Date;

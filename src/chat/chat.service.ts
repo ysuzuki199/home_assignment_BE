@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Room } from './room.entity';
 import { Participant, ParticipantStatus } from './patricipant.entity';
 import { User } from 'src/user/user.entity';
+import { Message } from './message.entity';
 import moment from 'moment';
 
 @Injectable()
@@ -12,6 +13,8 @@ export class ChatService {
     @InjectRepository(Room) private roomRepo: Repository<Room>,
     @InjectRepository(Participant)
     private participantRepo: Repository<Participant>,
+    @InjectRepository(Message)
+    private messageRepo: Repository<Message>,
   ) {}
 
   async room(roomID: number): Promise<Room> {
@@ -71,5 +74,33 @@ export class ChatService {
     }
 
     return existingRoom;
+  }
+
+  async messages(userId: number, roomId: number): Promise<Message[]> {
+    //check if the user is participating
+    const exists = await this.participantRepo.exists({
+      where: {
+        roomID: roomId,
+        userID: userId,
+        status: ParticipantStatus.ONLINE,
+      },
+    });
+
+    if (!exists)
+      throw new Error(
+        'cannot get messages of a room if the user is not participated in it',
+      );
+    //get messages
+    const messages = await this.messageRepo.find({
+      where: {
+        room: {
+          id: roomId,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    return messages;
   }
 }

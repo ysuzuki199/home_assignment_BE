@@ -24,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DATABASE_NAME,
       entities: ['**/*.entity.js'],
       synchronize: true, //migrate automatically, not recommended in production/staging environment
+      logging: false,
     }),
     TypeOrmModule.forFeature([User]), //DI user repository
     ChatModule,
