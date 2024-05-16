@@ -1,3 +1,17 @@
+## server setup
+```
+# build
+docker compose build
+# run containers(backend and MySQL database)
+docker compose up -d
+# run commands inside app container
+docker compose exec app npm run start:dev // starting development server
+docker compose exec app npx generate module xxx // running nest command
+# stop containers
+docker compose down
+```
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
