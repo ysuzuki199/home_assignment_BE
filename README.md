@@ -15,6 +15,23 @@ docker compose exec app npx generate module xxx // running nest command
 docker compose down
 ```
 
+## API endpoints
+local
+http://localhost:30001
+
+| path or event_name           | protocol | description           | progression |
+|---------------------------|:--------:|-----------------------:|:-------:|
+| signin/                   | http     |                        | o       |
+| chats/                    | http     | get current rooms      | o       |
+| chats/:roomId/messages    | http     |                        | o       |
+| chats/:roomId/participants| http     |                        | o       |
+| join_new_room             | socket   |                        | o       |
+| join_existing_room        | socket   |                        | o       |
+| post_message              | socket   |                        | △       |
+| edit_message              | socket   |                        | x       |
+| leave_room                | socket   |                        | x       |
+
+---
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
