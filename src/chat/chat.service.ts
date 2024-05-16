@@ -17,16 +17,15 @@ export class ChatService {
     private messageRepo: Repository<Message>,
   ) {}
 
-  async room(roomID: number): Promise<Room> {
-    const room = await this.roomRepo.findOne({
-      where: {
-        id: roomID,
+  async rooms(): Promise<Room[]> {
+    const rooms = await this.roomRepo.find({
+      //TODO: add soft delete flag column to rooms table and select only non-deleted rooms
+      order: {
+        createdAt: 'DESC',
       },
-      relations: ['participants.user'],
     });
-    if (!room) throw new Error('room not found');
 
-    return room;
+    return rooms;
   }
   async joinNewRoom(userId: number, roomTitle: string): Promise<Room> {
     const now = moment();

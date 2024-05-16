@@ -9,14 +9,11 @@ import { Participant } from './patricipant.entity';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Get('/:roomID/')
+  @Get('/')
   @UseGuards(AuthGuard)
-  async roomParticipants(@Param('roomID') roomID: string): Promise<Room> {
-    const idNumber = Number(roomID);
-    if (isNaN(idNumber)) throw new Error('invalid room id');
-
-    const participants = await this.chatService.room(idNumber);
-    return participants;
+  async rooms(): Promise<Room[]> {
+    const rooms = await this.chatService.rooms();
+    return rooms;
   }
 
   @Get('/:roomID/messages')
