@@ -17,6 +17,7 @@ import { Repository } from 'typeorm';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
 import { JoinNewRoomDto } from './dto/join_new_room.dto';
+import { JoinExistingRoomDto } from './dto/join_existing_room.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway
@@ -58,6 +59,23 @@ export class ChatGateway
     //emit some message to participants
     client.to(`${room.id}`).emit('join_user', `${client.user.nickname} joined`);
     return 'join_new_room success';
+  }
+
+  @SubscribeMessage('join_existing_room')
+  @UseGuards(AuthGuard)
+  async joinExistingRoom(
+    @MessageBody() dto: JoinExistingRoomDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    const room = await this.chatService.joinExistingRoom(
+      client.user.id,
+      dto.roomId,
+    );
+    //join room
+    client.join(`${room.id}`);
+    //emit some message to participants
+    client.to(`${room.id}`).emit('join_user', `${client.user.nickname} joined`);
+    return 'join_existing_room success';
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {

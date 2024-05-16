@@ -46,4 +46,30 @@ export class ChatService {
     await this.participantRepo.save(participant);
     return _room;
   }
+
+  async joinExistingRoom(userId: number, roomId: number): Promise<Room> {
+    //find room
+    const existingRoom = await this.roomRepo.findOne({ where: { id: roomId } });
+    if (!existingRoom) throw new Error('room does not exist');
+    //find participant
+    const existingParticipant = await this.participantRepo.findOne({
+      where: { roomID: roomId, userID: userId },
+    });
+    console.log(existingParticipant);
+    if (!existingParticipant) {
+      //create participant
+      const participant = this.participantRepo.create({
+        roomID: existingRoom.id,
+        userID: userId,
+        status: ParticipantStatus.ONLINE,
+      });
+      await this.participantRepo.save(participant);
+    } else {
+      //update participant
+      existingParticipant.status = ParticipantStatus.ONLINE;
+      await this.participantRepo.save(existingParticipant);
+    }
+
+    return existingRoom;
+  }
 }
