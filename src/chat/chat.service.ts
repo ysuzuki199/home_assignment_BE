@@ -103,4 +103,29 @@ export class ChatService {
     });
     return messages;
   }
+  async participants(userId: number, roomId: number): Promise<Participant[]> {
+    //check if the user is participating
+    const exists = await this.participantRepo.exists({
+      where: {
+        roomID: roomId,
+        userID: userId,
+        status: ParticipantStatus.ONLINE,
+      },
+    });
+
+    if (!exists)
+      throw new Error(
+        'cannot get messages of a room if the user is not participated in it',
+      );
+    //get participants
+    const participants = await this.participantRepo.find({
+      where: {
+        room: {
+          id: roomId,
+        },
+      },
+      relations: ['user'],
+    });
+    return participants;
+  }
 }
