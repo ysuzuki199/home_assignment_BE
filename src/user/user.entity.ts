@@ -11,6 +11,8 @@ export class User {
   @Column()
   nickname: string;
 
+  //TODO: when adding secret-like columns, find a way to omit these values from API response.
+
   @OneToMany(() => Room, (room) => room.createdBy, {
     nullable: false,
   })
