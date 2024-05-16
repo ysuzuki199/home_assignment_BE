@@ -29,7 +29,7 @@ export class Message {
     nullable: false,
   })
   @JoinColumn()
-  createdBy: User[];
+  user: User;
 
   @Column()
   updatedAt: Date;

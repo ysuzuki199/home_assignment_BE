@@ -25,7 +25,7 @@ export class User {
   })
   rooms: Room[];
 
-  @OneToMany(() => Message, (message) => message.createdBy, {
+  @OneToMany(() => Message, (message) => message.user, {
     nullable: false,
   })
   messages: Message[];
