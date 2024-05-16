@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { extractUserFromAuthHeader } from 'src/middlewares/auth.middleware';
+import { extractUserFromAuthHeader } from '../auth/auth.middleware';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
