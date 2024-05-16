@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Room } from './room.entity';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 
 enum ParticipantStatus {
   ONLINE = 'online',

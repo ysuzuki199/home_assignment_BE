@@ -1,5 +1,5 @@
-import { User } from 'src/user/user.entity';
-import { Message } from 'src/chat/message.entity';
+import { User } from '../user/user.entity';
+import { Message } from '../chat/message.entity';
 import { Participant } from './patricipant.entity';
 import {
   Entity,

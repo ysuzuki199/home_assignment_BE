@@ -5,7 +5,7 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(@InjectRepository(User) public repo: Repository<User>) {}
 
   async createUser(nickname: string): Promise<User> {
     const exists = await this.repo.existsBy({ nickname: nickname });

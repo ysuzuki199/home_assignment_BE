@@ -10,11 +10,11 @@ import {
 } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { extractUserFromAuthHeader } from 'src/middlewares/auth.middleware';
+import { extractUserFromAuthHeader } from '../middlewares/auth.middleware';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 import { Repository } from 'typeorm';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway
