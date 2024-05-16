@@ -3,7 +3,7 @@ import { User } from './user.entity';
 import { Request } from 'express';
 import { CreateUserDto } from './dto/create_user.dto';
 import { UserService } from './user.service';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('users')
 export class UserController {
