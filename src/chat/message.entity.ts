@@ -17,7 +17,7 @@ export class Message {
     nullable: false,
   })
   @JoinColumn()
-  room: Room[];
+  room: Room;
 
   @Column()
   content: string;

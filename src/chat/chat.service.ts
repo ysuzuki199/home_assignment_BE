@@ -5,7 +5,7 @@ import { Room } from './room.entity';
 import { Participant, ParticipantStatus } from './patricipant.entity';
 import { User } from 'src/user/user.entity';
 import { Message } from './message.entity';
-import moment from 'moment';
+import moment, { now } from 'moment';
 
 @Injectable()
 export class ChatService {
@@ -77,17 +77,15 @@ export class ChatService {
 
   async messages(userId: number, roomId: number): Promise<Message[]> {
     //check if the user is participating
-    const exists = await this.participantRepo.exists({
-      where: {
-        roomID: roomId,
-        userID: userId,
-        status: ParticipantStatus.ONLINE,
-      },
-    });
+    const participating = await isUserParticipating(
+      this.participantRepo,
+      userId,
+      roomId,
+    );
 
-    if (!exists)
+    if (!participating)
       throw new Error(
-        'cannot get messages of a room if the user is not participated in it',
+        'cannot get messages of a room if the user is not participating in it',
       );
     //get messages
     const messages = await this.messageRepo.find({
@@ -105,17 +103,15 @@ export class ChatService {
   }
   async participants(userId: number, roomId: number): Promise<Participant[]> {
     //check if the user is participating
-    const exists = await this.participantRepo.exists({
-      where: {
-        roomID: roomId,
-        userID: userId,
-        status: ParticipantStatus.ONLINE,
-      },
-    });
+    const participating = await isUserParticipating(
+      this.participantRepo,
+      userId,
+      roomId,
+    );
 
-    if (!exists)
+    if (!participating)
       throw new Error(
-        'cannot get messages of a room if the user is not participated in it',
+        'cannot get participants of a room if the user is not participating in it',
       );
     //get participants
     const participants = await this.participantRepo.find({
@@ -128,4 +124,48 @@ export class ChatService {
     });
     return participants;
   }
+  async createMessage(
+    userId: number,
+    roomId: number,
+    content: string,
+  ): Promise<Message> {
+    const now = moment();
+    //check if the user is participating
+    const participating = await isUserParticipating(
+      this.participantRepo,
+      userId,
+      roomId,
+    );
+    if (!participating) throw new Error('user is not participating');
+
+    //create message
+    const message = this.messageRepo.create({
+      room: {
+        id: roomId,
+      },
+      content: content, //need some word filtering and sanitization
+      user: {
+        id: userId,
+      },
+      createdAt: now.toDate(),
+      updatedAt: now.toDate(),
+    });
+    //memo: need rate limit?
+    const _message = await this.messageRepo.save(message);
+    return _message;
+  }
 }
+
+const isUserParticipating = async (
+  participantRepo: Repository<Participant>,
+  userId: number,
+  roomId: number,
+) => {
+  return await participantRepo.exists({
+    where: {
+      roomID: roomId,
+      userID: userId,
+      status: ParticipantStatus.ONLINE,
+    },
+  });
+};

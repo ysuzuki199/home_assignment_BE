@@ -8,7 +8,12 @@ import {
   OnGatewayDisconnect,
   OnGatewayInit,
 } from '@nestjs/websockets';
-import { UseGuards } from '@nestjs/common';
+import {
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+  BadRequestException,
+} from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { extractUserFromAuthHeader } from '../auth/auth.middleware';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,8 +23,14 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
 import { JoinNewRoomDto } from './dto/join_new_room.dto';
 import { JoinExistingRoomDto } from './dto/join_existing_room.dto';
+import { PostMessageDto } from './dto/post_message.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
+@UsePipes(
+  new ValidationPipe({
+    transform: true,
+  }),
+)
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -76,6 +87,23 @@ export class ChatGateway
     //emit some message to participants
     client.to(`${room.id}`).emit('join_user', `${client.user.nickname} joined`);
     return 'join_existing_room success';
+  }
+
+  @SubscribeMessage('post_message')
+  @UseGuards(AuthGuard)
+  async postMessage(
+    @MessageBody() dto: PostMessageDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    const message = await this.chatService.createMessage(
+      client.user.id,
+      dto.roomId,
+      dto.content,
+    );
+    message.user = client.user;
+    //emit message to participants
+    this.server.to(`${dto.roomId}`).emit('post_message', message);
+    return 'post_message success';
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
