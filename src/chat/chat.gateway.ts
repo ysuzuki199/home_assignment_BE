@@ -102,8 +102,7 @@ export class ChatGateway
     );
     message.user = client.user;
     //emit message to participants
-    //client.to(`${dto.roomId}`).emit('post_message', message);
-    client.emit('post_message', 'hihihih');
+    this.server.to(`${dto.roomId}`).emit('post_message', message);
     return 'post_message success';
   }
 
