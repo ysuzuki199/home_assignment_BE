@@ -5,7 +5,7 @@ import { Room } from './room.entity';
 import { Participant, ParticipantStatus } from './patricipant.entity';
 import { User } from 'src/user/user.entity';
 import { Message } from './message.entity';
-import moment, { now } from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class ChatService {
@@ -124,6 +124,7 @@ export class ChatService {
     });
     return participants;
   }
+
   async createMessage(
     userId: number,
     roomId: number,
@@ -151,6 +152,50 @@ export class ChatService {
       updatedAt: now.toDate(),
     });
     //memo: need rate limit?
+    const _message = await this.messageRepo.save(message);
+    return _message;
+  }
+
+  async editMessage(
+    userId: number,
+    roomId: number,
+    messageId: number,
+    content: string,
+  ): Promise<Message> {
+    const now = moment();
+    //check if the user is participating
+    const participating = await isUserParticipating(
+      this.participantRepo,
+      userId,
+      roomId,
+    );
+    if (!participating) throw new Error('user is not participating');
+
+    //get latest message
+    const message = await this.messageRepo.findOne({
+      where: {
+        room: {
+          id: roomId,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    if (!message) {
+      throw new Error('no messages were posted in the room');
+    }
+    //check if the latest message is user's
+    if (message.id !== messageId) {
+      throw new Error('message_id is not the latest one');
+    }
+    if (message.userId !== userId) {
+      throw new Error('message_id is not posted by the user');
+    }
+    //update message
+    message.content = content; //need some word filtering and sanitization
+    message.updatedAt = now.toDate();
+
     const _message = await this.messageRepo.save(message);
     return _message;
   }

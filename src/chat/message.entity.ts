@@ -7,11 +7,15 @@ import {
 } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Room } from './room.entity';
+import internal from 'stream';
 
 @Entity('messages')
 export class Message {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  userId: number;
 
   @ManyToOne(() => Room, (room) => room.messages, {
     nullable: false,
@@ -28,7 +32,7 @@ export class Message {
   @ManyToOne(() => User, (user) => user.messages, {
     nullable: false,
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column()
