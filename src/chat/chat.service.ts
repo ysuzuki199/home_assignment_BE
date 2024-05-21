@@ -210,6 +210,18 @@ export class ChatService {
     );
     return;
   }
+  async leaveAllRoom(userId: number) {
+    //update participant
+    this.participantRepo.update(
+      {
+        userId: userId,
+      },
+      {
+        status: ParticipantStatus.OFFLINE,
+      },
+    );
+    return;
+  }
 }
 
 const isUserParticipating = async (

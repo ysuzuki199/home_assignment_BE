@@ -65,8 +65,12 @@ export class ChatGateway
   handleConnection(@ConnectedSocket() client: Socket) {
     console.log('@@handleConnection: ', client.id);
   }
-  handleDisconnect(@ConnectedSocket() client: Socket) {
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
     console.log('@@handleDisconnect: ', client.id);
+    if (client.user) {
+      await this.chatService.leaveAllRoom(client.user.id);
+    }
+    //user leaves all rooms in socket.io automatically when disconnected
   }
 
   @SubscribeMessage('join_new_room')
