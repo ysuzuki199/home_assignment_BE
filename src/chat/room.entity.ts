@@ -7,20 +7,29 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('rooms')
 export class Room {
+  //columns
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   title: string;
+  @Column({ name: 'created_by' })
+  createdBy: number;
 
+  @Column({ name: 'created_at' })
+  createdAt: Date;
+
+  //relations
   @ManyToOne(() => User, (user) => user.rooms, {
     nullable: false,
   })
-  createdBy: User;
+  @JoinColumn({ name: 'created_by' })
+  createdByUser: User;
 
   @OneToMany(() => Message, (message) => message.room, {
     nullable: false,
@@ -31,7 +40,4 @@ export class Room {
     nullable: false,
   })
   participants: Participant[];
-
-  @Column()
-  createdAt: Date;
 }

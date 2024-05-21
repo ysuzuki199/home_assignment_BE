@@ -30,19 +30,17 @@ export class ChatService {
   async joinNewRoom(userId: number, roomTitle: string): Promise<Room> {
     const now = moment();
     //create room
-    const user = new User();
-    user.id = userId;
     const room = this.roomRepo.create({
       title: roomTitle,
-      createdBy: user,
+      createdBy: userId,
       createdAt: now.toDate(),
     });
     const _room = await this.roomRepo.save(room);
 
     //create participant
     const participant = this.participantRepo.create({
-      roomID: _room.id,
-      userID: userId,
+      roomId: _room.id,
+      userId: userId,
       status: ParticipantStatus.ONLINE,
     });
     await this.participantRepo.save(participant);
@@ -55,14 +53,14 @@ export class ChatService {
     if (!existingRoom) throw new Error('room does not exist');
     //find participant
     const existingParticipant = await this.participantRepo.findOne({
-      where: { roomID: roomId, userID: userId },
+      where: { roomId: roomId, userId: userId },
     });
     console.log(existingParticipant);
     if (!existingParticipant) {
       //create participant
       const participant = this.participantRepo.create({
-        roomID: existingRoom.id,
-        userID: userId,
+        roomId: existingRoom.id,
+        userId: userId,
         status: ParticipantStatus.ONLINE,
       });
       await this.participantRepo.save(participant);
@@ -208,8 +206,8 @@ const isUserParticipating = async (
 ) => {
   return await participantRepo.exists({
     where: {
-      roomID: roomId,
-      userID: userId,
+      roomId: roomId,
+      userId: userId,
       status: ParticipantStatus.ONLINE,
     },
   });
