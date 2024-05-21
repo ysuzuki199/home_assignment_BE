@@ -25,6 +25,7 @@ import { JoinNewRoomDto } from './dto/join_new_room.dto';
 import { JoinExistingRoomDto } from './dto/join_existing_room.dto';
 import { PostMessageDto } from './dto/post_message.dto';
 import { EditMessageDto } from './dto/edit_message.dto';
+import { LeaveRoomDto } from './dto/leave_room.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 //memo: useGlobalPipes() doesn't work on gateways!!
@@ -131,5 +132,16 @@ export class ChatGateway
     message.user = client.user;
     this.server.to(`${dto.roomId}`).emit('edit_message', message);
     return 'edit_message success';
+  }
+
+  @SubscribeMessage('leave_room')
+  @UseGuards(AuthGuard)
+  async leaveRoom(
+    @MessageBody() dto: LeaveRoomDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    await this.chatService.leaveRoom(client.user.id, dto.roomId);
+    client.leave(`${dto.roomId}`);
+    return 'leave_room success';
   }
 }
