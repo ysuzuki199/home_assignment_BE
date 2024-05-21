@@ -20,10 +20,10 @@ export class UserService {
     const users = this.repo.find();
     return users;
   }
-  async user(userID: number): Promise<User> {
+  async user(userId: number): Promise<User> {
     const user = await this.repo.findOne({
       where: {
-        id: userID,
+        id: userId,
       },
     });
     return user;

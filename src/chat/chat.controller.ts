@@ -16,26 +16,26 @@ export class ChatController {
     return rooms;
   }
 
-  @Get('/:roomID/messages')
+  @Get('/:roomId/messages')
   @UseGuards(AuthGuard)
   async messages(
-    @Param('roomID') roomID: string,
+    @Param('roomId') roomId: string,
     @Req() req: Request,
   ): Promise<Message[]> {
-    const idNumber = Number(roomID);
+    const idNumber = Number(roomId);
     if (isNaN(idNumber)) throw new Error('invalid room id');
 
     const messages = await this.chatService.messages(req.user.id, idNumber);
     return messages;
   }
 
-  @Get('/:roomID/participants')
+  @Get('/:roomId/participants')
   @UseGuards(AuthGuard)
   async participants(
-    @Param('roomID') roomID: string,
+    @Param('roomId') roomId: string,
     @Req() req: Request,
   ): Promise<Participant[]> {
-    const idNumber = Number(roomID);
+    const idNumber = Number(roomId);
     if (isNaN(idNumber)) throw new Error('invalid room id');
 
     const participants = await this.chatService.participants(

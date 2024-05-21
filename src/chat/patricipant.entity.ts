@@ -8,24 +8,26 @@ export enum ParticipantStatus {
 }
 @Entity('participants')
 export class Participant {
-  @PrimaryColumn()
-  roomID: number;
+  //columns
+  @PrimaryColumn({ name: 'room_id' })
+  roomId: number;
 
+  @PrimaryColumn({ name: 'user_id' })
+  userId: number;
+
+  @Column()
+  status: ParticipantStatus;
+
+  //relations
   @ManyToOne(() => Room, (room) => room.participants, {
     nullable: false,
   })
-  @JoinColumn({ name: 'roomID' })
+  @JoinColumn({ name: 'room_id' })
   room: Room;
-
-  @PrimaryColumn()
-  userID: number;
 
   @ManyToOne(() => User, (user) => user.participants, {
     nullable: false,
   })
-  @JoinColumn({ name: 'userID' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @Column()
-  status: ParticipantStatus;
 }

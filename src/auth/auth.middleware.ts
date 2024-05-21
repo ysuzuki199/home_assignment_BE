@@ -35,15 +35,15 @@ export const extractUserFromAuthHeader = async (
     throw new Error('token is missing');
   }
 
-  const userID = decodeTokenAndExtractUserID(token);
-  const user = await repo.findOne({ where: { id: userID } });
+  const userId = decodeTokenAndExtractUserId(token);
+  const user = await repo.findOne({ where: { id: userId } });
   if (!user) {
     throw new Error('user not found');
   }
   return user;
 };
 
-const decodeTokenAndExtractUserID = (token: string): number => {
+const decodeTokenAndExtractUserId = (token: string): number => {
   //auth header is defined as "Bearer {user_id}" to simplify authentication process
   const id = Number(token);
   if (isNaN(id)) {
