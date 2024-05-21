@@ -197,6 +197,19 @@ export class ChatService {
     const _message = await this.messageRepo.save(message);
     return _message;
   }
+  async leaveRoom(userId: number, roomId: number) {
+    //update participant
+    this.participantRepo.update(
+      {
+        roomId: roomId,
+        userId: userId,
+      },
+      {
+        status: ParticipantStatus.OFFLINE,
+      },
+    );
+    return;
+  }
 }
 
 const isUserParticipating = async (
