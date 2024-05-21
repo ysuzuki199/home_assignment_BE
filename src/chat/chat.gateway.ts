@@ -27,6 +27,8 @@ import { PostMessageDto } from './dto/post_message.dto';
 import { EditMessageDto } from './dto/edit_message.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
+//memo: useGlobalPipes() doesn't work on gateways!!
+//https://docs.nestjs.com/pipes#global-scoped-pipes
 @UsePipes(
   new ValidationPipe({
     transform: true,
