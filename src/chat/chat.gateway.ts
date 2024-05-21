@@ -24,6 +24,7 @@ import { ChatService } from './chat.service';
 import { JoinNewRoomDto } from './dto/join_new_room.dto';
 import { JoinExistingRoomDto } from './dto/join_existing_room.dto';
 import { PostMessageDto } from './dto/post_message.dto';
+import { EditMessageDto } from './dto/edit_message.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 @UsePipes(
@@ -56,6 +57,13 @@ export class ChatGateway
       socket.user = user;
       next();
     });
+  }
+
+  handleConnection(@ConnectedSocket() client: Socket) {
+    console.log('@@handleConnection: ', client.id);
+  }
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    console.log('@@handleDisconnect: ', client.id);
   }
 
   @SubscribeMessage('join_new_room')
@@ -106,10 +114,20 @@ export class ChatGateway
     return 'post_message success';
   }
 
-  handleConnection(@ConnectedSocket() client: Socket) {
-    console.log('@@handleConnection: ', client.id);
-  }
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    console.log('@@handleDisconnect: ', client.id);
+  @SubscribeMessage('edit_message')
+  @UseGuards(AuthGuard)
+  async editMessage(
+    @MessageBody() dto: EditMessageDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    const message = await this.chatService.editMessage(
+      client.user.id,
+      dto.roomId,
+      dto.messageId,
+      dto.content,
+    );
+    message.user = client.user;
+    this.server.to(`${dto.roomId}`).emit('edit_message', message);
+    return 'edit_message success';
   }
 }
