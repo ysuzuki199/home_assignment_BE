@@ -223,8 +223,6 @@ export class ChatService {
     return;
   }
   async deleteRoom(userId: number, roomId: number) {
-    //todo: soft delete
-
     //find room
     const room = await this.roomRepo.find({
       where: {
@@ -236,9 +234,7 @@ export class ChatService {
       throw new Error('room not found');
     }
     //delete room
-    //(transaction if hard delete)
-    await this.messageRepo.delete({ roomId: roomId });
-    await this.roomRepo.delete({ id: roomId });
+    await this.roomRepo.softDelete({ id: roomId });
 
     return;
   }

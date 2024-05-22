@@ -157,6 +157,7 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ): Promise<string> {
     await this.chatService.deleteRoom(client.user.id, dto.roomId);
+    //emit a message to participants
     this.server.to(`${dto.roomId}`).emit('delete_room', 'room was deleted');
     return 'delete_room success';
   }

@@ -8,6 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity('rooms')
@@ -23,6 +24,9 @@ export class Room {
 
   @Column({ name: 'created_at' })
   createdAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt?: Date;
 
   //relations
   @ManyToOne(() => User, (user) => user.rooms, {
