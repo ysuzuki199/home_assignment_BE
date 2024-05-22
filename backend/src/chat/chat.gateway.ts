@@ -26,6 +26,7 @@ import { JoinExistingRoomDto } from './dto/join_existing_room.dto';
 import { PostMessageDto } from './dto/post_message.dto';
 import { EditMessageDto } from './dto/edit_message.dto';
 import { LeaveRoomDto } from './dto/leave_room.dto';
+import { DeleteRoomDto } from './dto/delete_room.dto';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 //memo: useGlobalPipes() doesn't work on gateways!!
@@ -147,5 +148,16 @@ export class ChatGateway
     await this.chatService.leaveRoom(client.user.id, dto.roomId);
     client.leave(`${dto.roomId}`);
     return 'leave_room success';
+  }
+
+  @SubscribeMessage('delete_room')
+  @UseGuards(AuthGuard)
+  async deleteRoom(
+    @MessageBody() dto: DeleteRoomDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<string> {
+    await this.chatService.deleteRoom(client.user.id, dto.roomId);
+    this.server.to(`${dto.roomId}`).emit('delete_room', 'room was deleted');
+    return 'delete_room success';
   }
 }
