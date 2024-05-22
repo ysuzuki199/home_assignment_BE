@@ -222,6 +222,22 @@ export class ChatService {
     );
     return;
   }
+  async deleteRoom(userId: number, roomId: number) {
+    //find room
+    const room = await this.roomRepo.find({
+      where: {
+        id: roomId,
+        createdBy: userId,
+      },
+    });
+    if (!room) {
+      throw new Error('room not found');
+    }
+    //delete room
+    await this.roomRepo.softDelete({ id: roomId });
+
+    return;
+  }
 }
 
 const isUserParticipating = async (
