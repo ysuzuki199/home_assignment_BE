@@ -56,9 +56,13 @@ export class ChatGateway
       //request with no auth header can pass as public access
       if (!token) return next();
 
-      const user = await extractUserFromAuthHeader(token, this.userRepo);
-      //authorized and set user
-      socket.user = user;
+      try {
+        const user = await extractUserFromAuthHeader(token, this.userRepo);
+        //authorized and set user
+        socket.user = user;
+      } catch (e) {
+        socket.emit('error', { message: e.message });
+      }
       next();
     });
   }
